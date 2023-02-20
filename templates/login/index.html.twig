@@ -6,16 +6,28 @@
     {% endif %}
 
     <form action="{{ path('app_login') }}" method="post">
-        <label for="username">Email:</label>
-        <input type="text" id="username" name="_username" value="{{ last_login }}">
-
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="_password">
-
-        {# If you want to control the URL the user is redirected to on success
-        <input type="hidden" name="_target_path" value="/account"> #}
-
-        <button type="submit">login</button>
+        <div class="field">
+            <label class="label" for="username">E-mail:</label>
+            <div class="control has-icons-left">
+                <input type="email" id="username" name="_username" value="{{ last_login }}" class="input" autocomplete="email" required autofocus/>
+                <span class="icon is-small is-left">
+                    <i class="lni lni-envelope"></i>
+                </span>
+            </div>
+        </div>
+        <div class="field">
+            <label class="label" for="password">Mot de passe:</label>
+            <div class="control has-icons-left">
+                <input type="password" id="password" class="input" name="_password" placeholder="Password" required/>
+                <span class="icon is-small is-left">
+                    <i class="lni lni-lock-alt"></i>
+                </span>
+            </div>
+        </div>
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+        <div class="control">
+            <button type="submit" class="button is-link">Submit</button>
+        </div>
     </form>
 
 {% endblock %}
