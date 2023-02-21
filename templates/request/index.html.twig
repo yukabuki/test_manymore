@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello RequestController!{% endblock %}
+
+{% block body %}
+    {% for request in requests %}
+        <li>{{ dump(request) }}</li>
+    {% endfor %}
+
+
+    <table>
+        <thead>
+            <tr>
+                <th>Titre</th>
+                <th>Statut</th>
+                <th>Piece jointe</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+                {% for request in requests %}
+                <tr>
+                    <td>{{ request.title }}</td>
+                    <td>{{ request.status }}</td>
+                    <td>{% if request.attachment is null %}NON{% else %}OUI{% endif %}</td>
+                    <td></td>
+                </tr>
+                {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
