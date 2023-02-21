@@ -1,29 +1,24 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello RequestController!{% endblock %}
-
 {% block body %}
-    {% for request in requests %}
-        <li>{{ dump(request) }}</li>
-    {% endfor %}
-
-
-    <table>
+    <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
         <thead>
             <tr>
                 <th>Titre</th>
                 <th>Statut</th>
                 <th>Piece jointe</th>
-                <th>Action</th>
+                <th>Crée par</th>
+                {% if app.user and 'ROLE_ADMIN' in app.user.roles %}<th>Action</th>{% endif %}
             </tr>
         </thead>
         <tbody>
                 {% for request in requests %}
                 <tr>
-                    <td>{{ request.title }}</td>
+                    <td><a href="{{ path('app_request_detail', {'id': request.id}) }}">{{ request.title }}</a></td>
                     <td>{{ request.status }}</td>
                     <td>{% if request.attachment is null %}NON{% else %}OUI{% endif %}</td>
-                    <td></td>
+                    <td>{{ request.createdBy.email }}</td>
+                    {% if app.user and 'ROLE_ADMIN' in app.user.roles %}<td class="is-flex is-flex-direction-column"><a class="button is-primary" href="{{ path('app_request_edit', {'id': request.id}) }}">Modifier</a><a class="button is-danger" href="{{ path('app_request_delete', {'id': request.id}) }}">Supprimer</a></td>{% endif %}
                 </tr>
                 {% endfor %}
         </tbody>

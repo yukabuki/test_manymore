@@ -8,10 +8,12 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\{Response, Request as Html_Request};
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class RequestController extends AbstractController
 {
     #[Route('/request', name: 'app_request')]
+    #[IsGranted('ROLE_USER')]
     public function index(ManagerRegistry $doctrine): Response
     {
 	    $requests = $doctrine->getRepository(Request::class)->findAll();
@@ -24,6 +26,7 @@ class RequestController extends AbstractController
 
 
 	#[Route('/request/new', name: 'app_request_new')]
+	#[IsGranted('ROLE_ADMIN')]
 	public function new(Html_Request $html_request, ManagerRegistry $doctrine): Response
 	{
 		$entityManager = $doctrine->getManager();
@@ -54,29 +57,73 @@ class RequestController extends AbstractController
 		]);
 	}
 
-	#[Route('/request/delete', name: 'app_request_delete')]
-	public function delete(): Response
+	#[Route('/request/delete/{id}', name: 'app_request_delete')]
+	#[IsGranted('ROLE_ADMIN')]
+	public function delete(int $id, ManagerRegistry $doctrine): Response
 	{
-		return $this->render('request/index.html.twig', [
-			'title' => 'Suppression d\'une demande',
-		]);
+		$request = $doctrine->getRepository(Request::class)->find($id);
+		if (!$request) {
+			throw $this->createNotFoundException('Cette demande n\'existe pas.');
+		}
+
+		$entityManager = $doctrine->getManager();
+		$entityManager->remove($request);
+		$entityManager->flush();
+
+		$this->addFlash(
+			'warning',
+			'La demande N°'.$id.' a était supprimer.'
+		);
+
+		return $this->redirectToRoute('app_request');
 	}
 
-	#[Route('/request/edit', name: 'app_request_edit')]
-	public function edit(): Response
+	#[Route('/request/edit/{id}', name: 'app_request_edit')]
+	#[IsGranted('ROLE_ADMIN')]
+	public function edit(int $id, Html_Request $html_request, ManagerRegistry $doctrine): Response
 	{
-		return $this->render('request/index.html.twig', [
-			'title' => 'Modification de la demande N°',
+		$entityManager = $doctrine->getManager();
+		$request = $doctrine->getRepository(Request::class)->find($id);
+
+		$form = $this->createForm(RequestFormType::class, $request);
+
+		$form->handleRequest($html_request);
+		if ($form->isSubmitted() && $form->isValid()) {
+			$request = $form->getData();
+
+
+			$entityManager->persist($request);
+			$entityManager->flush();
+
+			$this->addFlash(
+				'success',
+				'Votre demande a bien était modifié.'
+			);
+
+			return $this->redirectToRoute('app_request');
+		}
+
+		return $this->render('request/edit.html.twig', [
+			'title' => 'Modification de la demande N°'.$id,
+			'form' => $form,
 		]);
 	}
 
 
 
 	#[Route('/request/{id}', name: 'app_request_detail')]
-	public function detail(): Response
+	#[IsGranted('ROLE_USER')]
+	public function detail(int $id, ManagerRegistry $doctrine): Response
 	{
-		return $this->render('request/index.html.twig', [
-			'title' => 'Demande N°',
+		$request = $doctrine->getRepository(Request::class)->find($id);
+
+		if (!$request) {
+			throw $this->createNotFoundException('Cette demande n\'existe pas.');
+		}
+
+		return $this->render('request/detail.html.twig', [
+			'title' => 'Demande N°'.$id,
+			'request' => $request,
 		]);
 	}
 }

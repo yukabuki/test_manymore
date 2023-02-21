@@ -1,0 +1,18 @@
+{% set route_name = app.request.attributes.get('_route') %}
+
+<div class="navbar-start">
+    {% if route_name == "app_request" %}{% endif %}<a class="navbar-item" href="{{ path('app_request') }}">Demandes</a>
+    {% if app.user %}{% if 'ROLE_ADMIN' in app.user.roles %}
+        {% if route_name == "app_request" %}{% endif %}<a class="navbar-item" href="{{ path('app_request_new') }}" >Nouvelle demande</a>
+    {% endif %}{% endif %}
+</div>
+<div class="navbar-end">
+    <div class="buttons">
+        {% if app.user %}
+            {% if route_name == "app_logout" %}{% endif %}<a class="button is-light" href="{{ path('app_logout') }}">Déconnexion</a>
+        {% else %}
+            {% if route_name == "app_register" %}{% endif %}<a class="button is-primary" href="{{ path('app_register') }}">Inscription</a>
+            {% if route_name == "app_login" %}{% endif %}<a class="button is-light" href="{{ path('app_login') }}">Connexion</a>
+        {% endif %}
+    </div>
+</div>

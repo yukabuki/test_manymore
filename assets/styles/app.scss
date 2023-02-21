@@ -1,0 +1,119 @@
+@charset "utf-8";
+
+$fa-font-path: '~@fortawesome/fontawesome-free/webfonts';
+@import '~@fortawesome/fontawesome-free/scss/fontawesome';
+@import '~@fortawesome/fontawesome-free/scss/solid';
+@import '~@fortawesome/fontawesome-free/scss/regular';
+
+/*
+ * -- VARIABLES --
+ */
+$maxScreenContent: 1284px;
+$minScreenContent: 400px;
+$headerHeight: 95px;
+
+
+$primary: #1ee2e7;
+$link: #F08080;
+
+
+
+body * {
+    box-sizing: border-box;
+    line-height: 1.5em;
+    font-size: 18px;
+}
+body {
+    padding: 0.01px;
+    background-color: $link;
+    color: #4a4a4a;
+}
+
+
+/* Header du site */
+#HeaderMenu {
+    display: flex;
+    justify-content: center;
+    position: fixed;
+    width: 100%;
+    max-height: $headerHeight;
+    margin: 0 auto;
+    top: 0;
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+    z-index: 3;
+    transition: all 0.3s ease-out;
+}
+#HeaderMenu .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 50px;
+    max-width: $maxScreenContent;
+    width: inherit;
+    min-width: $minScreenContent;
+    padding: 0 3rem;
+}
+#HeaderMenu .navbar-img {
+    margin: 5px;
+    padding: 5px;
+    border-radius: 50%;
+}
+
+
+
+
+
+
+#MainSection {
+    margin: calc(#{$headerHeight} + 2.5rem) auto 2.5rem auto;
+    max-width: $maxScreenContent;
+    height: 1500px;
+    background-color: #fff;
+    border-radius: 3rem;
+    overflow: hidden;
+}
+#Notifications {
+    margin: #{$headerHeight} auto calc((#{$headerHeight} + 2.5rem) * -0.5) auto;
+    max-width: $maxScreenContent;
+    background-color: #fff;
+    border-radius: 3rem;
+    overflow: hidden;
+}
+#MainSection > header {
+    background-color: $primary;
+    padding: 1rem 3rem;
+}
+#MainSection > header h1 {
+
+}
+#MainSection > footer {
+
+}
+#MainSection > article {
+    padding: 0 3rem;
+}
+
+
+
+
+
+
+
+
+
+
+/* Footer de site */
+body > footer.footer {
+    padding: 1rem 0;
+    background-color: #fff;
+    .columns {
+        max-width: 1284px;
+        margin: auto;
+        gap: 15px;
+        .column {
+            margin: 0;
+            color: #fff;
+        }
+    }
+}

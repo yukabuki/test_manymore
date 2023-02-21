@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="columns">
+        <div class="column">
+            Titre
+        </div>
+        <div class="column">
+            {{ request.title }}
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column">
+            Contenue
+        </div>
+        <div class="column">
+            {{ request.text }}
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column">
+            Statut
+        </div>
+        <div class="column">
+            {{ request.status }}
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column">
+            Piece jointe
+        </div>
+        <div class="column">
+            {% if request.attachment is null %}NON{% else %}OUI{% endif %}
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column">
+            Crée
+        </div>
+        <div class="column">
+            Par {{ request.createdBy.email }} le {{ request.createdAt|date('d/m/Y à h:m:s') }}
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column">
+            Dernier modification
+        </div>
+        <div class="column">
+            Par {{ request.updatedBy.email }} le {{ request.updatedAt|date('d/m/Y à h:m:s') }}
+        </div>
+    </div>
+
+    {% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+        <a class="button is-primary" href="{{ path('app_request_edit', {'id': request.id}) }}">Modifier</a>
+        <a class="button is-danger" href="{{ path('app_request_delete', {'id': request.id}) }}">Supprimer</a>
+    {% endif %}
+{% endblock %}

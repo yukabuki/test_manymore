@@ -12,9 +12,70 @@
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+                    const $notification = $delete.parentNode;
+
+                    $delete.addEventListener('click', () => {
+                        $notification.parentNode.removeChild($notification);
+                    });
+                });
+            });
+        </script>
     </head>
     <body>
-        <h1>{{ title|default('Default') }}</h1>
-        {% block body %}{% endblock %}
+        <header id="HeaderMenu" class="is-transparent">
+            <div class="navbar" role="navigation" aria-label="main navigation">
+                <div class="navbar-brand">
+                    <a class="navbar-img has-background-white is-rounded" href="{{ path('app_homepage') }}">
+                        ManyMore
+                    </a>
+                </div>
+                <nav class="navbar-menu">
+                    {% include "_partials/_nav.html.twig" %}
+                </nav>
+            </div>
+        </header>
+
+        {% if app.session.flashbag.peekAll()|length > 0 %}
+            <div id="Notifications" class="is-fullwidth">
+                {% for message in app.flashes('success') %}
+                    <div class="notification is-success" role="alert">
+                        <button class="delete"></button>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+
+                {% for message in app.flashes('warning') %}
+                    <div class="notification is-warning" role="alert">
+                        <button class="delete"></button>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+
+                {% for message in app.flashes('error') %}
+                    <div class="notification is-error" role="alert">
+                        <button class="delete"></button>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <main>
+            <section id="MainSection">
+                <header class="block" style="position: relative">
+                    {% block page_title %}<h1>{{ title|default('Default') }}</h1>{% endblock %}
+                </header>
+                <article>
+                    {% block body %}{% endblock %}
+                </article>
+                <footer></footer>
+            </section>
+        </main>
+
+        {% include "_partials/_footer.html.twig" %}
     </body>
 </html>

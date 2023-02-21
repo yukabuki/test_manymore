@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class RequestFormType extends AbstractType
 {
@@ -48,15 +49,31 @@ class RequestFormType extends AbstractType
 		}
 
         $builder
-            ->add('Title', TextType::class)
-            ->add('text', TextareaType::class)
+            ->add('Title', TextType::class, [
+				'label' => 'Titre',
+	            'constraints' => [
+		            new Assert\Length([
+			            'max' => 128,
+			            'maxMessage' => 'Maximum {{ limit }} caractères',
+		            ]),
+		            new Assert\NotBlank()
+	            ]
+            ])
+            ->add('text', TextareaType::class, [
+				'label' => 'Contenu',
+	            'constraints' => [
+		            new Assert\NotBlank()
+	            ]
+            ])
             ->add('Attachment', FileType::class, [
 	            'required' => false,
+	            'label' => 'Piece joint',
             ]);
-		if ($request->getId()) {
+		if ($request->getId() && $request->getStatus() != 'closed') {
 			$builder
 				->add('Status', ChoiceType::class, [
 					'choices'  => $choices,
+					'label' => 'Statut',
 				]);
 		}
 	    $builder
